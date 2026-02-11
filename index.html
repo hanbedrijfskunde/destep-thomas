@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kegro Deuren - Strategische DESTEP & OT Analyse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!--
+    PALETTE: "Energetic & Professional"
+    - Deep Blue: #1E3A8A (Betrouwbaarheid)
+    - Vibrant Orange: #F97316 (Innovatie/Energie)
+    - Teal: #0D9488 (Duurzaamheid/Ecologie)
+    - Cyan: #06B6D4 (Toekomst accent)
+    - Light Gray: #F8FAFC (Achtergrond)
+    -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kegro: {
+                            dark: '#1E3A8A',
+                            primary: '#2563EB',
+                            accent: '#F97316',
+                            eco: '#0D9488',
+                            bg: '#F8FAFC',
+                            cyan: '#06B6D4'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 380px; }
+        }
+        .info-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .info-card:hover {
+            transform: translateY(-4px);
+        }
+        .opportunity-box {
+            border-left: 4px solid #0D9488;
+            background-color: rgba(13, 148, 136, 0.05);
+        }
+        .threat-box {
+            border-left: 4px solid #EF4444;
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+        .probability-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06B6D4, #F97316);
+        }
+        .lki-card {
+            border-left: 4px solid #06B6D4;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .lki-card:hover {
+            border-left-width: 8px;
+            transform: translateY(-2px);
+        }
+        .toggle-btn {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-kegro-bg text-slate-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-kegro-dark text-white py-8 px-6 shadow-xl sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Kegro Deuren B.V.</h1>
+                <p id="header-subtitle" class="text-kegro-accent text-lg md:text-xl mt-1 font-semibold uppercase tracking-widest">DESTEP & Strategische OT-Analyse</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex bg-white/10 rounded-full p-1 border border-white/20">
+                    <button id="btn-current" onclick="switchView('current')" class="toggle-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-kegro-dark shadow">
+                        Huidige Analyse
+                    </button>
+                    <button id="btn-future" onclick="switchView('future')" class="toggle-btn px-4 py-2 rounded-full text-sm font-semibold text-white/70 hover:text-white">
+                        Toekomst 2031
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== CURRENT VIEW ==================== -->
+    <div id="view-current">
+        <main class="max-w-6xl mx-auto p-6 md:p-10 space-y-16">
+
+            <!-- Intro Section -->
+            <section class="prose max-w-none">
+                <h2 class="text-3xl font-bold text-kegro-dark border-b-2 border-kegro-accent inline-block pb-1">Context Analyse</h2>
+                <p class="text-lg text-slate-600 mt-4 leading-relaxed">
+                    Als bedrijfskundig adviseur is het cruciaal om de externe dynamiek van Kegro Deuren te begrijpen. In een markt die wordt gedreven door <strong>verduurzaming</strong>, <strong>woningnood</strong> en <strong>technologische disruptie</strong>, biedt deze DESTEP-analyse de basis voor een scherpe SWOT-diagnose. Hieronder vindt u per dimensie de strategische kansen en uitdagingen.
+                </p>
+            </section>
+
+            <!-- DESTEP Grid -->
+            <div class="space-y-20">
+
+                <!-- D - Demografisch -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">D</span>
+                            <h3 class="text-2xl font-bold">Demografisch</h3>
+                        </div>
+                        <div class="chart-container bg-white p-4 rounded-xl shadow-inner">
+                            <canvas id="chartD"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-4 italic text-center text-wrap">Fig 1: Woningbehoefte vs Realisatie. Bron: CBS/EIB Prognoses.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">Structurele vraag door woningtekort (900.000 woningen) en focus op renovatie van de verouderde woningvoorraad.</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Krapte op de arbeidsmarkt; tekort aan vakmensen voor montage en technische productieprocessen.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- E - Economisch -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div class="order-2 md:order-1 space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">Kostprijsleiderschap door robotisering; schaalvoordelen behalen in een gefragmenteerde timmerindustrie.</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Grondstofvolatiliteit (houtprijzen) en inflatie die de marges op langlopende bouwprojecten onder druk zetten.</p>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">E</span>
+                            <h3 class="text-2xl font-bold">Economisch</h3>
+                        </div>
+                        <div class="chart-container bg-white p-4 rounded-xl shadow-inner">
+                            <canvas id="chartE"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- S - Sociaal -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">S</span>
+                            <h3 class="text-2xl font-bold">Sociaal-Cultureel</h3>
+                        </div>
+                        <div class="chart-container bg-white p-4 rounded-xl shadow-inner">
+                            <canvas id="chartS"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">Toenemende behoefte aan veiligheid en comfort; consumenten en corporaties investeren in inbraak- en geluidwerende oplossingen.</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Hoge eisen aan bewonerscommunicatie bij renovatie; de 'overlast' van vervanging moet minimaal zijn.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- T - Technologisch -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div class="order-2 md:order-1 space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">Digital twin & BIM integratie; door Meet-O-Matic data direct te koppelen aan productie wordt Kegro een onmisbare ketenpartner.</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Hoge investeringsdruk en snelle veroudering van software en robotica; cyberrisico's in een verbonden fabriek.</p>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">T</span>
+                            <h3 class="text-2xl font-bold">Technologisch</h3>
+                        </div>
+                        <div class="chart-container bg-white p-4 rounded-xl shadow-inner">
+                            <canvas id="chartT"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- E - Ecologisch -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">E</span>
+                            <h3 class="text-2xl font-bold">Ecologisch</h3>
+                        </div>
+                        <div class="chart-container bg-white p-4 rounded-xl shadow-inner">
+                            <canvas id="chartEco"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">Hout als 'groen' alternatief voor kunststof; marktaandeel winnen door uitmuntende U-waarden (Passiefdeur).</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Strenge MPG (MilieuPrestatie Gebouwen) eisen en stikstofproblematiek die bouwvergunningen vertragen.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- P - Politiek -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+                    <div class="order-2 md:order-1 space-y-4">
+                        <div class="p-5 rounded-lg opportunity-box">
+                            <h4 class="font-bold text-kegro-eco flex items-center"><span class="mr-2">📈</span> Kans</h4>
+                            <p class="text-sm">De Wet Kwaliteitsborging (Wkb) stelt hogere eisen aan bewijslast; de gecertificeerde kwaliteit van Kegro biedt zekerheid aan de aannemer.</p>
+                        </div>
+                        <div class="p-5 rounded-lg threat-box">
+                            <h4 class="font-bold text-red-600 flex items-center"><span class="mr-2">⚠️</span> Uitdaging</h4>
+                            <p class="text-sm">Onvoorspelbaar overheidsbeleid rondom subsidies voor verduurzaming en stikstofwetgeving.</p>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl font-black text-kegro-dark/20">P</span>
+                            <h3 class="text-2xl font-bold">Politiek-Juridisch</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <p class="text-sm font-semibold text-kegro-dark mb-4 uppercase tracking-tighter">Regelgevingsdruk Radar</p>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span>Wkb Compliance</span>
+                                    <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="bg-kegro-primary h-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span>BENG Eisen</span>
+                                    <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="bg-kegro-accent h-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span>Stikstof Impact</span>
+                                    <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="bg-red-500 h-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- SWOT / OT Section -->
+            <section class="bg-kegro-dark text-white rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-kegro-accent/10 rounded-full -mr-32 -mt-32"></div>
+
+                <h2 class="text-3xl font-bold mb-8 text-center uppercase tracking-widest">Input voor SWOT: Kansen & Bedreigingen (OT)</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Opportunities (O) -->
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                        <h3 class="text-2xl font-bold text-kegro-eco mb-6 flex items-center">
+                            <span class="bg-kegro-eco text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">O</span>
+                            Opportunities (Kansen)
+                        </h3>
+                        <ul class="space-y-4 text-sm leading-relaxed">
+                            <li class="flex items-start">
+                                <span class="text-kegro-eco mr-2">▶</span>
+                                <span><strong>Marktvergroting:</strong> De enorme opgave voor nieuwbouw en de noodzaak tot renovatie van 2,4 miljoen woningen vóór 2030.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-kegro-eco mr-2">▶</span>
+                                <span><strong>Premium Positionering:</strong> Inspelen op de vraag naar 'High-Performance' deuren (brandwerendheid, passiefbouw, inbraakbeveiliging).</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-kegro-eco mr-2">▶</span>
+                                <span><strong>Service-differentiatie:</strong> Uitbouw van 'All-Inclusive' concepten (KAI) waarbij montage en ontzorging centraal staan.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-kegro-eco mr-2">▶</span>
+                                <span><strong>Data-integratie:</strong> Meet-O-Matic data gebruiken voor predictive maintenance en slimmere logistiek met aannemers.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Threats (T) -->
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                        <h3 class="text-2xl font-bold text-red-400 mb-6 flex items-center">
+                            <span class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">T</span>
+                            Threats (Bedreigingen)
+                        </h3>
+                        <ul class="space-y-4 text-sm leading-relaxed">
+                            <li class="flex items-start">
+                                <span class="text-red-400 mr-2">▶</span>
+                                <span><strong>Grondstoftekorten:</strong> Afhankelijkheid van gecertificeerd hardhout en de prijsfluctuaties in de wereldmarkt.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-400 mr-2">▶</span>
+                                <span><strong>Stikstof-Lockdown:</strong> Verdere vertragingen in grote nieuwbouwprojecten door juridische impasses.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-400 mr-2">▶</span>
+                                <span><strong>Personeelskrapte:</strong> Verlies van gespecialiseerde vakkennis door uitstroom zonder voldoende instroom.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-400 mr-2">▶</span>
+                                <span><strong>Substitutie:</strong> Concurrentie van alternatieve materialen (zoals hoogwaardige composieten) die minder onderhoud vergen.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 text-center text-sm opacity-60">
+                    <p>Deze analyse vormt de externe basis voor de confrontatiematrix van Kegro Deuren B.V.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ==================== FUTURE VIEW ==================== -->
+    <div id="view-future" style="display:none">
+        <main class="max-w-6xl mx-auto p-6 md:p-10 space-y-16">
+
+            <!-- Vision Statement -->
+            <section class="bg-slate-100 p-8 rounded-3xl border border-slate-200">
+                <h2 class="text-xl font-bold text-kegro-dark mb-4 flex items-center">
+                    <span class="w-2 h-2 bg-kegro-cyan mr-3 rounded-full animate-pulse"></span>
+                    De Toekomstige Kern (2031)
+                </h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    In 2031 is Kegro niet langer een toeleverancier van fysieke houten objecten, maar een <strong>data-gedreven regisseur van de gebouwschil</strong>. De deuren zijn 'smart' bij oplevering, het houtgebruik is 'carbon-negative' en de businessmodellen zijn gebaseerd op abonnementen voor prestaties.
+                </p>
+            </section>
+
+            <!-- THE 4 DIMENSIONS OF 2031 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+                <!-- D: Micro-Living & Flex-Housing -->
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end border-b border-slate-200 pb-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl font-black text-kegro-cyan/30">D</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Demografisch</h3>
+                        </div>
+                        <span class="text-kegro-cyan font-mono text-sm">2031 Horizon</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 class="text-kegro-accent font-bold mb-2">Thema: Hyper-Urbane Micro-Living</h4>
+                        <p class="text-sm text-slate-600 mb-4">De focus verschuift van gezinswoningen naar modulaire 'studios' en 'shared living' voor een groeiende groep eenpersoonshuishoudens en actieve senioren.</p>
+
+                        <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                            <div class="p-3 rounded-lg opportunity-box">
+                                <span class="font-bold block text-kegro-eco">Kans</span>
+                                Modulaire deur-systemen voor snelle (her)configuratie van ruimtes.
+                            </div>
+                            <div class="p-3 rounded-lg threat-box">
+                                <span class="font-bold block text-red-600">Bedreiging</span>
+                                Krimp van de traditionele markt voor grote massieve voordeuren.
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="chart2031_D"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs uppercase font-bold text-slate-400">Waarschijnlijkheid: 85%</p>
+                            <div class="probability-bar"><div class="probability-fill" style="width: 85%"></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- E: Access-as-a-Service -->
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end border-b border-slate-200 pb-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl font-black text-kegro-cyan/30">E</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Economisch</h3>
+                        </div>
+                        <span class="text-kegro-cyan font-mono text-sm">2031 Horizon</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 class="text-kegro-accent font-bold mb-2">Thema: Deur-as-a-Service (DaaS)</h4>
+                        <p class="text-sm text-slate-600 mb-4">Hoge initiele kosten voor duurzaam bouwen dwingen corporaties naar 'OpEx' modellen. Kegro verhuurt prestaties (toegang, isolatie) in plaats van productverkoop.</p>
+
+                        <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                            <div class="p-3 rounded-lg opportunity-box">
+                                <span class="font-bold block text-kegro-eco">Kans</span>
+                                Voorspelbare kasstromen via 30-jarige onderhouds- en prestatiecontracten.
+                            </div>
+                            <div class="p-3 rounded-lg threat-box">
+                                <span class="font-bold block text-red-600">Bedreiging</span>
+                                Enorme kapitaalbehoefte om producten op de eigen balans te houden.
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="chart2031_E"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs uppercase font-bold text-slate-400">Waarschijnlijkheid: 70%</p>
+                            <div class="probability-bar"><div class="probability-fill" style="width: 70%"></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- S: Biophilic Health Mandate -->
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end border-b border-slate-200 pb-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl font-black text-kegro-cyan/30">S</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Sociaal</h3>
+                        </div>
+                        <span class="text-kegro-cyan font-mono text-sm">2031 Horizon</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 class="text-kegro-accent font-bold mb-2">Thema: Biophilic Well-being</h4>
+                        <p class="text-sm text-slate-600 mb-4">Gezondheid wordt de nieuwe luxe. Deuren worden gewaardeerd om hun vermogen lucht te zuiveren, geluid te blokkeren en de connectie met de natuur (hout) te herstellen.</p>
+
+                        <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                            <div class="p-3 rounded-lg opportunity-box">
+                                <span class="font-bold block text-kegro-eco">Kans</span>
+                                Certificering als 'gezondheidsobject' (Well-Standard) verhoogt de m² prijs.
+                            </div>
+                            <div class="p-3 rounded-lg threat-box">
+                                <span class="font-bold block text-red-600">Bedreiging</span>
+                                Strenge eisen aan chemische emissies van lijmen en lakken (Zero-VOC).
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="chart2031_S"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs uppercase font-bold text-slate-400">Waarschijnlijkheid: 90%</p>
+                            <div class="probability-bar"><div class="probability-fill" style="width: 90%"></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- T: Generative AI-Manufacturing -->
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end border-b border-slate-200 pb-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl font-black text-kegro-cyan/30">T</span>
+                            <h3 class="text-2xl font-bold text-slate-800">Technologisch</h3>
+                        </div>
+                        <span class="text-kegro-cyan font-mono text-sm">2031 Horizon</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 class="text-kegro-accent font-bold mb-2">Thema: Autonomous Digital Thread</h4>
+                        <p class="text-sm text-slate-600 mb-4">Ontwerp gebeurt via Generative Design (AI). De fabriek is volledig autonoom en gekoppeld aan een Digital Product Passport voor elke individuele deur.</p>
+
+                        <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                            <div class="p-3 rounded-lg opportunity-box">
+                                <span class="font-bold block text-kegro-eco">Kans</span>
+                                Zero-waste productie; elke reststroom wordt hergebruikt via AI-optimalisatie.
+                            </div>
+                            <div class="p-3 rounded-lg threat-box">
+                                <span class="font-bold block text-red-600">Bedreiging</span>
+                                Software-afhankelijkheid van tech-giganten voor het besturingssysteem.
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="chart2031_T"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs uppercase font-bold text-slate-400">Waarschijnlijkheid: 95%</p>
+                            <div class="probability-bar"><div class="probability-fill" style="width: 95%"></div></div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- EVIDENCE SECTION -->
+            <section class="bg-kegro-dark text-white rounded-3xl p-8 md:p-10 shadow-2xl">
+                <h2 class="text-2xl font-bold mb-8 border-l-4 border-kegro-accent pl-4 uppercase">Waarom deze visie? (Bewijslast)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-kegro-cyan italic text-sm">EU Regelgeving (Evidence 1)</h5>
+                        <p class="text-xs opacity-70">De invoering van het <strong>EU Digital Product Passport (2027)</strong> verplicht fabrikanten om elke component van wieg tot graf te tracken. 2031 is het punt van volwassenheid van dit systeem.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-kegro-cyan italic text-sm">Material Scarcity (Evidence 2)</h5>
+                        <p class="text-xs opacity-70">De globale vraag naar bio-based materialen stijgt met 400%. Hout wordt een 'asset' die je niet meer wilt verkopen, maar wilt <strong>leasen</strong> om controle over de vezel te houden.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h5 class="font-bold text-kegro-cyan italic text-sm">Labor Displacement (Evidence 3)</h5>
+                        <p class="text-xs opacity-70">De pensioengolf van vakmensen in 2028 maakt handmatige processen onbetaalbaar. Volledige robotisering in 2031 is geen keuze meer, maar een overlevingsvoorwaarde.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LEADERSHIP DASHBOARD (LKI) -->
+            <section class="space-y-8">
+                <h2 class="text-3xl font-extrabold text-center text-kegro-dark uppercase tracking-tighter">Leading Key Indicators (LKI)</h2>
+                <p class="text-center text-slate-500 max-w-2xl mx-auto italic">Indicatoren waar het leiderschap nu naar moet kijken om de 2031-positie veilig te stellen.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="lki-card p-6 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs uppercase text-slate-400 mb-1">Circularity Index</p>
+                        <h6 class="text-2xl font-bold text-kegro-dark">42%</h6>
+                        <p class="text-[10px] text-slate-500 mt-2">Percentage van deuren met een gegarandeerd 'take-back' contract.</p>
+                    </div>
+                    <div class="lki-card p-6 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs uppercase text-slate-400 mb-1">Digital Thread Score</p>
+                        <h6 class="text-2xl font-bold text-kegro-dark">0.82</h6>
+                        <p class="text-[10px] text-slate-500 mt-2">Ratio van data-gekoppelde componenten in het ERP systeem.</p>
+                    </div>
+                    <div class="lki-card p-6 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs uppercase text-slate-400 mb-1">Carbon Sequestration</p>
+                        <h6 class="text-2xl font-bold text-kegro-dark">-12.5kg</h6>
+                        <p class="text-[10px] text-slate-500 mt-2">Netto CO2-opslag per standaard deurunit inclusief logistiek.</p>
+                    </div>
+                    <div class="lki-card p-6 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs uppercase text-slate-400 mb-1">R&D Future Spend</p>
+                        <h6 class="text-2xl font-bold text-kegro-dark">18%</h6>
+                        <p class="text-[10px] text-slate-500 mt-2">Aandeel van R&D gericht op IoT en AI-driven manufacturing.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-500 py-10 px-6 text-center text-sm">
+        <p id="footer-text">&copy; 2026 Bedrijfskundig Advies | Analyse Kegro Deuren</p>
+    </footer>
+
+    <script>
+        // --- SHARED HELPERS ---
+        function splitLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function(items) {
+                    const label = items[0].chart.data.labels[items[0].dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // --- CHART FACTORY FUNCTIONS ---
+        const chartFactories = {
+            current: {
+                chartD: () => ({
+                    type: 'bar',
+                    data: {
+                        labels: ['Behoefte Ambitie', 'Bouwstroom 2024', 'Gerealiseerd 2025'].map(splitLabel),
+                        datasets: [{
+                            label: 'Woningen (x1000)',
+                            data: [100, 75, 68],
+                            backgroundColor: ['#1E3A8A', '#2563EB', '#F97316']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: tooltipConfig }
+                    }
+                }),
+                chartE: () => ({
+                    type: 'line',
+                    data: {
+                        labels: ['2021', '2022', '2023', '2024', '2025', '2026'].map(splitLabel),
+                        datasets: [
+                            { label: 'Houtprijs Index', data: [100, 150, 130, 145, 155, 160], borderColor: '#F97316', tension: 0.2 },
+                            { label: 'Loonkosten Index', data: [100, 105, 115, 125, 135, 142], borderColor: '#1E3A8A', tension: 0.2 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { tooltip: tooltipConfig }
+                    }
+                }),
+                chartS: () => ({
+                    type: 'radar',
+                    data: {
+                        labels: ['Veiligheid', 'Luxe Design', 'Milieubewust', 'Service/Ontzorging', 'Budget Focus'].map(splitLabel),
+                        datasets: [{
+                            label: 'Marktvraag Intensiteit',
+                            data: [9, 7, 8, 9, 6],
+                            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                            borderColor: '#2563EB'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: tooltipConfig },
+                        scales: { r: { suggestedMin: 0, suggestedMax: 10 } }
+                    }
+                }),
+                chartT: () => ({
+                    type: 'bar',
+                    data: {
+                        labels: ['Handmatig Inmeten', 'Meet-O-Matic Laser', 'Traditionele Montage', 'KAI All-In'].map(splitLabel),
+                        datasets: [{
+                            label: 'Foutkans (Lager is beter)',
+                            data: [15, 2, 10, 3],
+                            backgroundColor: ['#94A3B8', '#F97316', '#94A3B8', '#0D9488']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: tooltipConfig }
+                    }
+                }),
+                chartEco: () => ({
+                    type: 'bar',
+                    data: {
+                        labels: ['Oude Deur (90s)', 'BENG Standaard', 'Kegro KegaPro+', 'Passief Eis'].map(splitLabel),
+                        datasets: [{
+                            label: 'U-Waarde (W/m\u00b2K)',
+                            data: [3.2, 1.4, 0.6, 0.8],
+                            backgroundColor: ['#EF4444', '#94A3B8', '#0D9488', '#1E3A8A']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: tooltipConfig }
+                    }
+                })
+            },
+            future: {
+                chart2031_D: () => ({
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Gezinswoning', 'Micro-Studio', 'Senioren Flat', 'Shared Housing'].map(splitLabel),
+                        datasets: [{
+                            data: [30, 40, 20, 10],
+                            backgroundColor: ['#1E3A8A', '#06B6D4', '#F97316', '#94A3B8'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right', labels: { color: '#64748B', font: { size: 10 } } },
+                            tooltip: tooltipConfig
+                        }
+                    }
+                }),
+                chart2031_E: () => ({
+                    type: 'line',
+                    data: {
+                        labels: ['2026', '2027', '2028', '2029', '2030', '2031'].map(splitLabel),
+                        datasets: [
+                            {
+                                label: 'Traditionele Verkoop (%)',
+                                data: [95, 85, 70, 50, 35, 20],
+                                borderColor: '#94A3B8',
+                                borderDash: [5, 5],
+                                fill: false
+                            },
+                            {
+                                label: 'Service/DaaS Revenue (%)',
+                                data: [5, 15, 30, 50, 65, 80],
+                                borderColor: '#06B6D4',
+                                backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#64748B', font: { size: 10 } } },
+                            tooltip: tooltipConfig
+                        },
+                        scales: {
+                            y: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } }
+                        }
+                    }
+                }),
+                chart2031_S: () => ({
+                    type: 'bar',
+                    data: {
+                        labels: ['Hout (Bio)', 'Recycled Alum', 'Composiet', 'Plastic'].map(splitLabel),
+                        datasets: [{
+                            label: 'Marktvoorkeur Index',
+                            data: [9.5, 6.2, 5.8, 2.1],
+                            backgroundColor: ['#06B6D4', '#94A3B8', '#94A3B8', '#CBD5E1']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: tooltipConfig
+                        },
+                        scales: {
+                            x: { ticks: { color: '#64748B' }, grid: { color: '#E2E8F0' } },
+                            y: { ticks: { color: '#64748B' }, grid: { display: false } }
+                        }
+                    }
+                }),
+                chart2031_T: () => ({
+                    type: 'radar',
+                    data: {
+                        labels: ['Robotica', 'AI-Design', 'IoT-Connectivity', 'Zero-Waste', 'Supply-Chain AI'].map(splitLabel),
+                        datasets: [{
+                            label: 'Volwassenheid 2031',
+                            data: [9, 8, 9, 7, 9],
+                            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                            borderColor: '#F97316',
+                            pointBackgroundColor: '#F97316'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: tooltipConfig
+                        },
+                        scales: {
+                            r: {
+                                grid: { color: '#E2E8F0' },
+                                angleLines: { color: '#E2E8F0' },
+                                pointLabels: { color: '#64748B', font: { size: 10 } },
+                                suggestedMin: 0,
+                                suggestedMax: 10
+                            }
+                        }
+                    }
+                })
+            }
+        };
+
+        // --- VIEW SWITCHING ---
+        let activeCharts = {};
+        let currentView = null;
+
+        function switchView(view) {
+            if (view === currentView) return;
+            currentView = view;
+
+            // Destroy existing charts
+            Object.values(activeCharts).forEach(c => c.destroy());
+            activeCharts = {};
+
+            // Toggle visibility
+            document.getElementById('view-current').style.display = (view === 'current') ? 'block' : 'none';
+            document.getElementById('view-future').style.display = (view === 'future') ? 'block' : 'none';
+
+            // Update toggle buttons
+            const btnCurrent = document.getElementById('btn-current');
+            const btnFuture = document.getElementById('btn-future');
+            if (view === 'current') {
+                btnCurrent.className = 'toggle-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-kegro-dark shadow';
+                btnFuture.className = 'toggle-btn px-4 py-2 rounded-full text-sm font-semibold text-white/70 hover:text-white';
+            } else {
+                btnFuture.className = 'toggle-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-kegro-dark shadow';
+                btnCurrent.className = 'toggle-btn px-4 py-2 rounded-full text-sm font-semibold text-white/70 hover:text-white';
+            }
+
+            // Update header subtitle
+            document.getElementById('header-subtitle').textContent =
+                view === 'current'
+                    ? 'DESTEP & Strategische OT-Analyse'
+                    : 'Strategische Horizon Analyse 2031';
+
+            // Update footer
+            document.getElementById('footer-text').innerHTML =
+                view === 'current'
+                    ? '&copy; 2026 Bedrijfskundig Advies | Analyse Kegro Deuren'
+                    : '&copy; 2026-2031 Strategische Roadmap Kegro Deuren B.V.';
+
+            // Create charts after DOM reflow
+            requestAnimationFrame(() => {
+                const factories = chartFactories[view];
+                for (const [canvasId, factory] of Object.entries(factories)) {
+                    const canvas = document.getElementById(canvasId);
+                    if (canvas) {
+                        activeCharts[canvasId] = new Chart(canvas.getContext('2d'), factory());
+                    }
+                }
+            });
+        }
+
+        // Initialize with current view
+        switchView('current');
+    </script>
+</body>
+</html>
